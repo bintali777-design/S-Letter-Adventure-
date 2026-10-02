@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S Letter Adventure - KG1</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef8ff;color:#26364a}
+.wrap{max-width:760px;margin:auto;padding:18px}.card{background:#fff;border-radius:28px;padding:28px;text-align:center;box-shadow:0 8px 25px #0001}
+.s{font-size:100px;font-weight:900;color:#f5b82e;text-shadow:3px 3px #ffe6a3}.emoji{font-size:72px;margin:15px}
+h1{font-size:34px;margin:4px}.sub{font-size:19px;color:#63738a}
+.code{display:inline-block;background:#f4f8fc;padding:10px 22px;border-radius:15px;font-weight:bold;letter-spacing:4px;margin:15px}
+button{border:0;border-radius:20px;padding:17px 22px;font-size:22px;font-weight:800;cursor:pointer;min-height:58px}
+.start,.next,.again{background:#68b8e8;color:white;width:100%;margin-top:20px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:22px}.choice{background:white;border:3px solid #dce7f1;color:#26364a}.choice.correct{background:#e9f9ef;border-color:#55b878}.choice.wrong{background:#fff0f0;border-color:#ef7777}
+.progress{height:12px;background:#e5edf4;border-radius:10px;margin:15px 0;overflow:hidden}.bar{height:100%;background:#68b8e8;width:20%;transition:.3s}
+.feedback{min-height:35px;font-size:20px;font-weight:bold;margin-top:15px}.hidden{display:none}
+@media(max-width:520px){.choices{grid-template-columns:1fr}.card{padding:20px}.s{font-size:82px}h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div id="start" class="card">
+<div class="emoji">☀️ 🐍 ⭐</div><div class="s">S</div>
+<h1>S Letter Adventure</h1><div class="sub">KG1 • Let's learn the letter S!</div>
+<div class="code">S-KG1</div>
+<button class="start" onclick="startGame()">▶ Start Game</button>
+</div>
+
+<div id="game" class="card hidden">
+<div style="display:flex;justify-content:space-between;font-weight:bold"><span id="qnum">Question 1 of 5</span><span>⭐ <span id="score">0</span></span></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="level" class="sub"></div><h1 id="question"></h1><div id="picture" class="emoji"></div>
+<div id="choices" class="choices"></div><div id="feedback" class="feedback"></div>
+<button id="next" class="next hidden" onclick="nextQuestion()">Next ➜</button>
+</div>
+
+<div id="result" class="card hidden">
+<div class="emoji">🏆</div><h1>Amazing!</h1><p class="sub">You finished the S Letter Adventure!</p>
+<div style="font-size:45px">⭐ ⭐ ⭐</div><h2>Your score: <span id="final">0</span>/5</h2>
+<p id="resultText" class="sub"></p><button class="again" onclick="restart()">🔄 Play Again</button>
+</div>
+</div>
+
+<script>
+const qs=[
+{l:"Level 1 • Easy",q:"Which letter is S?",p:"🔤",c:["S","A","M","T"],a:0},
+{l:"Level 2 • Easy",q:"Which picture starts with S?",p:"☀️",c:["🍎 Apple","☀️ Sun","🐱 Cat","🐟 Fish"],a:1},
+{l:"Level 3 • Medium",q:"Which word starts with S?",p:"🐍",c:["Snake","Ball","Cat","Dog"],a:0},
+{l:"Level 4 • Medium",q:"Find the letter S.",p:"🔎",c:["P","B","S","C"],a:2},
+{l:"Level 5 • Challenge",q:"Which two words start with S?",p:"⭐",c:["Sun + Snake","Cat + Dog","Apple + Fish","Ball + Moon"],a:0}
+];
+let i=0,score=0,answered=false;
+function startGame(){document.getElementById("start").classList.add("hidden");document.getElementById("game").classList.remove("hidden");i=0;score=0;show()}
+function show(){
+answered=false;let x=qs[i];
+document.getElementById("qnum").textContent=`Question ${i+1} of 5`;
+document.getElementById("score").textContent=score;
+document.getElementById("bar").style.width=((i+1)*20)+"%";
+document.getElementById("level").textContent=x.l;
+document.getElementById("question").textContent=x.q;
+document.getElementById("picture").textContent=x.p;
+document.getElementById("feedback").textContent="";
+document.getElementById("next").classList.add("hidden");
+let box=document.getElementById("choices");box.innerHTML="";
+x.c.forEach((t,n)=>{let b=document.createElement("button");b.className="choice";b.textContent=t;b.onclick=()=>answer(n,b);box.appendChild(b)})
+}
+function answer(n,b){
+if(answered)return;answered=true;let x=qs[i],bs=[...document.querySelectorAll(".choice")];bs.forEach(z=>z.disabled=true);
+if(n===x.a){score++;b.classList.add("correct");document.getElementById("feedback").textContent="🌟 Great job!"}
+else{b.classList.add("wrong");bs[x.a].classList.add("correct");document.getElementById("feedback").textContent="💛 Good try! The answer is "+x.c[x.a]}
+document.getElementById("score").textContent=score;document.getElementById("next").classList.remove("hidden")
+}
+function nextQuestion(){if(i<4){i++;show()}else{document.getElementById("game").classList.add("hidden");document.getElementById("result").classList.remove("hidden");document.getElementById("final").textContent=score;document.getElementById("resultText").textContent=score===5?"Perfect! You are an S Star! ⭐":score>=3?"Well done! Keep practicing the letter S! 🌟":"Great try! Let's practice S again! 💛"}}
+function restart(){document.getElementById("result").classList.add("hidden");document.getElementById("game").classList.remove("hidden");i=0;score=0;show()}
+</script>
+</body>
+</html>
